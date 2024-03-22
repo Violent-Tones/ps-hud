@@ -135,6 +135,15 @@ const store = () => {
           colorEffects: [defaultColorEffect("normal", "#000000")],
           editableColors: defaultEditableColor(),
         }),
+        hygiene: getLocalStorage("hygiene", {
+          currentEffect: 0,
+          colorEffects: [
+            defaultColorEffect("clean", "#FFFFFF"),
+            defaultColorEffect("unclean", "#DEC20B"),
+            defaultColorEffect("dirty", "#5D461B"),
+          ],
+          editableColors: defaultEditableColor(),
+        })
       }
     }
   }

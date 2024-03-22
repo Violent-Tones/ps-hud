@@ -12,6 +12,7 @@ local nos = 0
 local stress = 0
 local hunger = 100
 local thirst = 100
+local hygiene = 100
 local cashAmount = 0
 local bankAmount = 0
 local nitroActive = 0
@@ -623,9 +624,12 @@ RegisterNetEvent('hud:client:ToggleAirHud', function()
     showAltitude = not showAltitude
 end)
 
-RegisterNetEvent('hud:client:UpdateNeeds', function(newHunger, newThirst) -- Triggered in qb-core
+RegisterNetEvent('hud:client:UpdateNeeds', function(newHunger, newThirst, newHygiene) -- Triggered in qb-core
     hunger = newHunger
     thirst = newThirst
+    if newHygiene then
+        hygiene = newHygiene
+    end
 end)
 
 RegisterNetEvent('hud:client:UpdateStress', function(newStress) -- Add this event with adding stress elsewhere
@@ -797,6 +801,7 @@ local function updatePlayerHud(data)
             engine = data[21],
             cinematic = data[22],
             dev = data[23],
+            hygiene = data[24],
         })
     end
 end
@@ -941,6 +946,7 @@ CreateThread(function()
                     -1,
                     Menu.isCineamticModeChecked,
                     dev,
+                    hygiene,
                 })
             end
 
@@ -982,6 +988,7 @@ CreateThread(function()
                     (GetVehicleEngineHealth(vehicle) / 10),
                     Menu.isCineamticModeChecked,
                     dev,
+                    hygiene,
                 })
 
                 updateVehicleHud({

@@ -1,10 +1,10 @@
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 export const iconNames = ["voice", "health", "armor", "hunger", "thirst", "stress",
-  "oxygen", "armed", "parachute", "engine", "harness", "cruise", "nitro", "dev"] as const;
+  "oxygen", "armed", "parachute", "engine", "harness", "cruise", "nitro", "dev", "hygiene"] as const;
 export type iconNamesKind = typeof iconNames[number];
 
-export const dynamicOptionIconNames = ["armor", "engine", "health", "hunger", "nitro", "oxygen", "stress", "thirst"] as const;
+export const dynamicOptionIconNames = ["armor", "engine", "health", "hunger", "nitro", "oxygen", "stress", "thirst", "hygiene"] as const;
 export type dynamicIconNamesKind = typeof dynamicOptionIconNames[number];
 
 export type playerHudIcons = {

@@ -137,6 +137,13 @@
         fetchNui("dynamicChange");
       }}
     />
+    <Checkbox bind:checked={$PlayerHudStore.dynamicIcons.hygiene}
+    primaryText={"Show Hygiene Always"}
+    handleUpdateFunction={(checked) => {
+      PlayerHudStore.updateShowingDynamicIcon("hygiene", checked);
+      fetchNui("dynamicChange");
+    }}
+  />
   </div>
 
   <hr>

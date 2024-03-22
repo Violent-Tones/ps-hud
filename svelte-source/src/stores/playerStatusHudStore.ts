@@ -2,6 +2,7 @@ import { writable } from 'svelte/store'
 import { faHeart, faShieldAlt, faHamburger, faTint, faBrain, faStream,
   faParachuteBox, faMeteor, faLungs, faOilCan, faUserSlash,
   faTachometerAltFast, faTerminal, faHeadset, faMicrophone,
+  faShower,
 } from '@fortawesome/free-solid-svg-icons'
 import type { playerHudIcons, shapekind, iconNamesKind, optionalHudIconType, dynamicIcons, dynamicIconNamesKind } from '../types/types';
 import { defaultHudIcon, createShapeIcon, capAmountToHundred, playerStoreLocalStorageName } from '../types/types';
@@ -34,6 +35,7 @@ type playerHudUpdateMessageType = {
   dynamicOxygen: boolean,
   dynamicEngine: boolean,
   dynamicNitro: boolean,
+  dynamicHygiene: boolean,
   health: number,
   playerDead: boolean,
   armor: number,
@@ -56,6 +58,7 @@ type playerHudUpdateMessageType = {
   engine: number,
   cinematic: boolean,
   dev: boolean,
+  hygiene: number
 }
   
 const store = () => {
@@ -93,15 +96,16 @@ const store = () => {
         cruise: getLocalStorage("cruise", defaultHudIcon("cruise", false, faTachometerAltFast)),
         nitro: getLocalStorage("nitro", defaultHudIcon("nitro", false, faMeteor)),
         dev: getLocalStorage("dev", defaultHudIcon("dev", false, faTerminal)),
+        hygiene: getLocalStorage("hygiene", defaultHudIcon("hygiene", false, faShower))
       },
       dynamicIcons: getLocalStorage("dynamicIcons", {
         armor: false, engine: false, health: false,
         hunger: false, nitro: false, oxygen: false,
-        stress: false, thirst: false,
+        stress: false, thirst: false, hygiene: false,
       }),
       saveUIState: "ready",
       show: false,
-      showingOrder: ["voice", "health", "armor", "hunger", "thirst", "stress", "oxygen", "armed",
+      showingOrder: ["voice", "health", "armor", "hunger", "thirst", "stress", "hygiene", "oxygen", "armed",
         "parachute", "engine", "harness", "cruise", "nitro", "dev"],
     }
   }
@@ -242,6 +246,10 @@ const store = () => {
             state.icons.thirst.isShowing = methods.staticGenericHundredHandleShow(staticShow, state.icons.thirst.progressValue);
             result = state.icons.thirst.isShowing;
             break;
+          case "hygiene":
+            state.icons.hygiene.isShowing = methods.staticGenericHundredHandleShow(staticShow, state.icons.hygiene.progressValue);
+            result = state.icons.hygiene.isShowing;
+            break;
         }
         return state;
       })
@@ -270,6 +278,7 @@ const store = () => {
         state.icons.thirst.progressValue = capAmountToHundred(data.thirst);
         state.icons.hunger.progressValue = capAmountToHundred(data.hunger);
         state.icons.stress.progressValue = capAmountToHundred(data.stress);
+        state.icons.hygiene.progressValue = capAmountToHundred(data.hygiene);
         // Should be 1.5, 3, 6 so * 16.6 to show progress
         state.icons.voice.progressValue = capAmountToHundred(data.voice * 16.6);
         state.icons.oxygen.progressValue = capAmountToHundred(data.oxygen);
@@ -315,6 +324,16 @@ const store = () => {
         }
 
         state.icons.stress.isShowing = methods.staticGenericZeroHandleShow(state.dynamicIcons.stress, state.icons.stress.progressValue);
+
+        state.icons.hygiene.isShowing = methods.staticGenericHundredHandleShow(state.dynamicIcons.hygiene, state.icons.hygiene.progressValue);
+        
+        if (data.hygiene <= 0){
+          ColorEffectStore.updateIconEffectStage("hygiene", 2)
+        } else if (data.hygiene <= 33) {
+          ColorEffectStore.updateIconEffectStage("hygiene", 1)
+        } else {
+          ColorEffectStore.updateIconEffectStage("hygiene", 0)
+        }
 
         state.icons.oxygen.isShowing = methods.staticGenericHundredHandleShow(state.dynamicIcons.oxygen, state.icons.oxygen.progressValue);
 
